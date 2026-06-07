@@ -344,7 +344,7 @@ document.addEventListener("DOMContentLoaded", () => {
   overlay.addEventListener("mousedown", async () => {
     if (isStarting) return;
     isStarting = true;
-    overlay.style.pointerEvents = "none";
+    // overlay.style.pointerEvents = "none";
     overlay.innerHTML = overlayLoadingHTML;
     overlay.style.opacity = 1;
 

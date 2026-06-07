@@ -40,7 +40,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function preloadPlaylist() {
     playlist.forEach((track) => {
-      const audio = new Audio(track.src);
+      const resolvedURL = new URL(track.src, window.location.href).href;
+      console.info("[audio] resolve track URL:", track.src, "=>", resolvedURL);
+
+      const audio = new Audio(resolvedURL);
       audio.preload = "auto";
       audio.crossOrigin = "anonymous";
       audio.addEventListener(

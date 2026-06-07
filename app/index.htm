@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <script src="../scripts/script.js" async="true"></script>
+    <link rel="stylesheet" href="../style/style.css">
+    
+    <title>portofoliostuff</title>
+</head>
+<body>
+    <audio src="../assets/buttonrollover.wav" id="hoversound"></audio>
+    <audio src="../assets/ui_click.ogg" id="clicksound"></audio>
+    <audio src="../assets/menu.ogg" id="bgm"></audio>
+
+    <div class="warn-overlay" id="overlay">
+        <p>site loaded, click anywhere to begin!</p>
+        <p>if you are looking for credits, i listed them all inside the <b>extras</b> menu!</p>
+
+        <div class="warn-footer">
+            <p><i>PROJECT IS STILL IN DEVELOPMENT. EXPECT VISUAL GLITCHES AND BUGS!</i></p>
+        </div>
+    </div>
+
+    <div class="bg" id="bg"></div>
+
+    <div class="noise" id="noise">
+        <img src="../assets/Television_static.gif" alt="noise1">
+    </div>
+    <div class="noise-switch" id="noise-switch"></div>
+
+    <div class="content-container">
+        <div class="container">
+            <div class="header">
+                <p>nezportofolio/<span id="page-name">main</span></p>
+                <div class="music-container">
+                    <p class="music-title" id="music-title">:3</p>
+                    <span class="material-symbols-outlined icon" id="icon">music_note</span>
+                </div>
+            </div>
+            <div class="content">
+                <div class="content-main">
+                    
+                    <!-- Main -->
+                    <div id="page-main" class="sub-page active">
+                        <div class="title">
+                            <i class="fa-solid fa-user icon"></i>
+                            <div class="title-content">
+                                <h2>main</h2>
+                                <p><i>think fast!</i></p>
+                            </div>
+                        </div>
+                        <div class="sub-page-content main">
+                            <div class="intro-wrapper">
+                            <p>hi, name is</p>
+                            <h1>nezad</h1>
+                            <p>the king of the world maybe</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- About -->
+                    <div id="page-about" class="sub-page">
+                        <div class="title">
+                            <i class="fa-solid fa-info icon"></i>
+                            <div class="title-content">
+                                <h2>about me</h2>
+                                <p><i>deep dive into myself!</i></p>
+                            </div>
+                        </div>
+                        <div class="sub-page-content about">
+                            <div class="about-title">
+                                <img src="../assets/sick.png" alt="nn_kellywood" />
+                                <div class="aboutme-wrapper">
+                                    <h1>about me</h1>
+                                </div>
+                            </div>
+                            <div class="about-desc">
+                                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nostrum soluta reprehenderit quidem porro repellat quam natus, mollitia in. Animi nam possimus veniam molestiae, velit cumque. Cupiditate nam aliquid dignissimos veritatis?</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- tech -->
+                    <div id="page-tech" class="sub-page">
+                        <div class="title">
+                            <i class="fa-solid fa-code icon"></i>
+                            <div class="title-content">
+                                <h2>tech stack</h2>
+                                <p><i>ooh, geeky.</i></p>
+                            </div>
+                        </div>
+                        <div class="sub-page-content tech"></div>
+                    </div>
+
+                    <!-- gallery -->
+                    <div id="page-gallery" class="sub-page">
+                        <div class="title">
+                            <i class="fa-solid fa-image icon"></i>
+                            <div class="title-content">
+                                <h2>gallery</h2>
+                                <p><i>could you be any LESS reckless?</i></p>
+                            </div>
+                        </div>
+                        <div class="sub-page-content gallery"></div>
+                    </div>
+
+                    <!-- contact -->
+                    <div id="page-contact" class="sub-page">
+                        <div class="title">
+                            <i class="fa-solid fa-phone icon"></i>
+                            <div class="title-content">
+                                <h2>contact</h2>
+                                <p><i>keep in touch or know more!</i></p>
+                            </div>
+                        </div>
+                        <div class="sub-page-content contact"></div>
+                    </div>
+
+                    <!-- extras -->
+                    <div id="page-extras" class="sub-page">
+                        <div class="title">
+                            <i class="fa-solid fa-wand-magic-sparkles icon"></i>
+                            <div class="title-content">
+                                <h2>extras</h2>
+                                <p><i>credits, goofies, and other stuff :P</i></p>
+                            </div>
+                        </div>
+                        <div class="sub-page-content extras"></div>
+                    </div>
+                </div>
+                <div class="nav">
+                    <ul>
+                        <li class="menu-lists"><a href="#" class="menu-link" data-page="main">main</a></li>
+                        <li class="menu-lists"><a href="#" class="menu-link" data-page="about">about me</a></li>
+                        <li class="menu-lists"><a href="#" class="menu-link" data-page="tech">tech stacks</a></li>
+                        <li class="menu-lists"><a href="#" class="menu-link" data-page="gallery">gallery</a></li>
+                        <li class="menu-lists"><a href="#" class="menu-link" data-page="contact">contact</a></li>
+                        <li class="menu-lists"><a href="#" class="menu-link" data-page="extras">extras</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer">
+                <i class="fa-brands fa-github"></i>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

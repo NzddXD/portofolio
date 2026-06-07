@@ -34,11 +34,38 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentTrackIndex = 0;
   const preloadedAudios = [];
 
+  function logAudioStatus(track, eventName, extra) {
+    console.info(`[audio] ${eventName}:`, track.src, extra || "");
+  }
+
   function preloadPlaylist() {
     playlist.forEach((track) => {
       const audio = new Audio(track.src);
       audio.preload = "auto";
       audio.crossOrigin = "anonymous";
+      audio.addEventListener(
+        "canplaythrough",
+        () => logAudioStatus(track, "canplaythrough"),
+        { once: true },
+      );
+      audio.addEventListener(
+        "loadeddata",
+        () => logAudioStatus(track, "loadeddata"),
+        { once: true },
+      );
+      audio.addEventListener(
+        "error",
+        () => {
+          const err = audio.error;
+          logAudioStatus(
+            track,
+            "error",
+            err ? `${err.code} (${err.message})` : "unknown",
+          );
+        },
+        { once: true },
+      );
+      audio.load();
       preloadedAudios.push(audio);
     });
   }
@@ -146,6 +173,20 @@ document.addEventListener("DOMContentLoaded", () => {
     
     bgm.addEventListener("ended", handleTrackEnded);
     bgm.addEventListener("play", handleTrackPlay);
+    bgm.addEventListener("canplaythrough", () => {
+      console.info("[bgm] ready to play:", currentTrack.src);
+    }, { once: true });
+    bgm.addEventListener("stalled", () => {
+      console.warn("[bgm] stalled while loading:", currentTrack.src);
+    });
+    bgm.addEventListener("error", () => {
+      const err = bgm.error;
+      console.error(
+        "[bgm] failed to load/play:",
+        currentTrack.src,
+        err ? `${err.code} (${err.message})` : "unknown error",
+      );
+    });
     
     document.body.appendChild(bgm);
 

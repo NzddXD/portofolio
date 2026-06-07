@@ -22,6 +22,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // =======================================================
   const strength = 20;
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  const overlayOriginalHTML = overlay.innerHTML;
+  const overlayLoadingHTML = `
+    <p>loading... please wait</p>
+    <p>preparing audio and visuals</p>
+  `;
 
   // playlist!
   const playlist = [
@@ -33,6 +38,42 @@ document.addEventListener("DOMContentLoaded", () => {
   ];
   let currentTrackIndex = 0;
   const preloadedAudios = [];
+  let isStarting = false;
+
+  async function waitForAudioReady(audio, timeout = 12000) {
+    if (!audio) {
+      throw new Error("waitForAudioReady: no audio element provided");
+    }
+    if (audio.readyState >= 4) {
+      return;
+    }
+
+    return new Promise((resolve, reject) => {
+      const onReady = () => {
+        cleanup();
+        resolve();
+      };
+      const onError = () => {
+        cleanup();
+        reject(audio.error || new Error("audio failed to load"));
+      };
+      const timer = setTimeout(() => {
+        cleanup();
+        reject(new Error("audio ready timeout"));
+      }, timeout);
+
+      function cleanup() {
+        clearTimeout(timer);
+        audio.removeEventListener("canplaythrough", onReady);
+        audio.removeEventListener("loadeddata", onReady);
+        audio.removeEventListener("error", onError);
+      }
+
+      audio.addEventListener("canplaythrough", onReady, { once: true });
+      audio.addEventListener("loadeddata", onReady, { once: true });
+      audio.addEventListener("error", onError, { once: true });
+    });
+  }
 
   function logAudioStatus(track, eventName, extra) {
     console.info(`[audio] ${eventName}:`, track.src, extra || "");
@@ -148,7 +189,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Playlist navigation queue system
-  function playTrack(index) {
+  async function playTrack(index) {
     if (index >= playlist.length) {
       index = 0; // wrap back
     }
@@ -160,12 +201,11 @@ document.addEventListener("DOMContentLoaded", () => {
     currentScale = 1.0;
     if (dataArray) dataArray.fill(0);
 
-    // FIXED: HARD DESTRUCTION AND RE-CREATION LOCKS
     if (bgm) {
       bgm.pause();
       bgm.removeEventListener("ended", handleTrackEnded);
       bgm.removeEventListener("play", handleTrackPlay);
-      bgm.remove(); 
+      bgm.remove();
     }
 
     bgm = document.createElement("audio");
@@ -173,12 +213,17 @@ document.addEventListener("DOMContentLoaded", () => {
     bgm.crossOrigin = "anonymous";
     bgm.volume = 0.5;
     bgm.src = currentTrack.src;
-    
+    bgm.preload = "auto";
+
     bgm.addEventListener("ended", handleTrackEnded);
     bgm.addEventListener("play", handleTrackPlay);
-    bgm.addEventListener("canplaythrough", () => {
-      console.info("[bgm] ready to play:", currentTrack.src);
-    }, { once: true });
+    bgm.addEventListener(
+      "canplaythrough",
+      () => {
+        console.info("[bgm] ready to play:", currentTrack.src);
+      },
+      { once: true },
+    );
     bgm.addEventListener("stalled", () => {
       console.warn("[bgm] stalled while loading:", currentTrack.src);
     });
@@ -190,7 +235,7 @@ document.addEventListener("DOMContentLoaded", () => {
         err ? `${err.code} (${err.message})` : "unknown error",
       );
     });
-    
+
     document.body.appendChild(bgm);
 
     // Auto name extractor
@@ -203,11 +248,20 @@ document.addEventListener("DOMContentLoaded", () => {
     typewritterEffect(musicTitleElem, displayName, 10);
 
     bgm.load();
-
-    // Re-verify the node stream connection graph links
     setupAudioContext();
 
-    bgm.play().catch((e) => console.log("got a problem!: ", e));
+    try {
+      await waitForAudioReady(bgm, 12000);
+      await bgm.play();
+    } catch (error) {
+      console.warn("[bgm] initial play failed, retrying:", error);
+      try {
+        await waitForAudioReady(bgm, 12000);
+        await bgm.play();
+      } catch (retryError) {
+        console.error("[bgm] unable to start playback:", retryError);
+      }
+    }
   }
 
   // Icon Beat System
@@ -287,16 +341,21 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  overlay.addEventListener("mousedown", () => {
-    async function fadenDestroy() {
+  overlay.addEventListener("mousedown", async () => {
+    if (isStarting) return;
+    isStarting = true;
+    overlay.style.pointerEvents = "none";
+    overlay.innerHTML = overlayLoadingHTML;
+    overlay.style.opacity = 1;
+
+    try {
+      await playTrack(0);
+    } finally {
+      overlay.innerHTML = overlayOriginalHTML;
       overlay.style.opacity = 0;
-      await new Promise((r) => setTimeout(r, 1200));
-
-      playTrack(0);
-
+      await sleep(1200);
       overlay.remove();
     }
-    fadenDestroy();
   });
 
   window.addEventListener("mousemove", (e) => {

@@ -25,13 +25,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // playlist!
   const playlist = [
-    { src: "../assets/menu.ogg", title: "nico's nexbots ost: menu (in-game)" },
-    { src: "../assets/awake.mp3", title: "nico's nexbots ost: awake (boombox ver.)" },
-    { src: "../assets/stepback.mp3", title: "nico's nexbots ost: stepback (in-game)" },
-    { src: "../assets/domi.ogg", title: "nico's nexbots ost: dominic's nexbots" },
-    { src: "../assets/RAMBUNK!.mp3", title: "forsaken emote ost: rambunctious" },
+    { src: "assets/menu.ogg", title: "nico's nexbots ost: menu (in-game)" },
+    { src: "assets/awake.mp3", title: "nico's nexbots ost: awake (boombox ver.)" },
+    { src: "assets/stepback.mp3", title: "nico's nexbots ost: stepback (in-game)" },
+    { src: "assets/domi.ogg", title: "nico's nexbots ost: dominic's nexbots" },
+    { src: "assets/RAMBUNK!.mp3", title: "forsaken emote ost: rambunctious" },
   ];
   let currentTrackIndex = 0;
+  const preloadedAudios = [];
+
+  function preloadPlaylist() {
+    playlist.forEach((track) => {
+      const audio = new Audio(track.src);
+      audio.preload = "auto";
+      audio.crossOrigin = "anonymous";
+      preloadedAudios.push(audio);
+    });
+  }
+
+  preloadPlaylist();
 
   //========================================================
   //  BEATSYNC CONFIGS

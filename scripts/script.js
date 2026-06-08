@@ -1,5 +1,7 @@
 // alr i dont fucking care anymore, kill yourself
 
+console.log("Yes, call me stupid idiot cus i wrote all of this in a vanilla JS.")
+
 document.addEventListener("DOMContentLoaded", () => {
   //========================================================
   //  DOM SELECTORS

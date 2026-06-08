@@ -19,6 +19,8 @@
 <body>
     <audio src="assets/buttonrollover.wav" id="hoversound"></audio>
     <audio src="assets/ui_click.ogg" id="clicksound"></audio>
+    <audio src="assets/menu_horror01.wav" id="clicksound-extra"></audio>
+    <audio src="assets/wpn_denyselect.wav" id="hoversound-extra"></audio>
     <audio src="assets/menu.ogg" id="bgm"></audio>
 
     <div class="warn-overlay" id="overlay">
@@ -134,17 +136,22 @@
                                 <p><i>credits, goofies, and other stuff :P</i></p>
                             </div>
                         </div>
-                        <div class="sub-page-content extras"></div>
+                        <div class="sub-page-content extras">
+                            <div class="menu-wrapper">
+                                <div class="extras-menu credits"></div>
+                                <div class="extras-menu credits"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="nav">
                     <ul>
-                        <li class="menu-lists"><a href="#" class="menu-link" data-page="main">main</a></li>
-                        <li class="menu-lists"><a href="#" class="menu-link" data-page="about">about me</a></li>
-                        <li class="menu-lists"><a href="#" class="menu-link" data-page="tech">tech stacks</a></li>
-                        <li class="menu-lists"><a href="#" class="menu-link" data-page="gallery">gallery</a></li>
-                        <li class="menu-lists"><a href="#" class="menu-link" data-page="contact">contact</a></li>
-                        <li class="menu-lists"><a href="#" class="menu-link" data-page="extras">extras</a></li>
+                        <li class="menu-lists"><a href="#" class="menu-link active" data-page="main" id="main">main</a></li>
+                        <li class="menu-lists"><a href="#" class="menu-link" data-page="about" id="about">about me</a></li>
+                        <li class="menu-lists"><a href="#" class="menu-link" data-page="tech" id="tech">tech stacks</a></li>
+                        <li class="menu-lists"><a href="#" class="menu-link" data-page="gallery" id="gallery">gallery</a></li>
+                        <li class="menu-lists"><a href="#" class="menu-link" data-page="contact" id="contact">contact</a></li>
+                        <li class="menu-lists"><a href="#" class="menu-link" data-page="extras" id="extras">extras</a></li>
                     </ul>
                 </div>
             </div>

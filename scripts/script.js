@@ -5,15 +5,18 @@ document.addEventListener("DOMContentLoaded", () => {
   //  DOM SELECTORS
   // =======================================================
   const links = document.querySelectorAll("a");
+  const extras = document.querySelectorAll(".extras-menu");
   const hoverSound = document.getElementById("hoversound");
+  const hoverSoundExtra = document.getElementById("hoversound-extra");
   const clickSound = document.getElementById("clicksound");
+  const clickSoundExtra = document.getElementById("clicksound-extra");
   const bg = document.getElementById("bg");
   const overlay = document.getElementById("overlay");
   const pageTitle = document.getElementById("page-name");
   const noiseSwitch = document.getElementById("noise-switch");
   const noteIcon = document.getElementById("icon");
   const musicTitleElem = document.getElementById("music-title");
-  
+
   // FIXED: Select the initial audio track, but let it be a re-assignable variable
   let bgm = document.getElementById("bgm");
 
@@ -28,14 +31,34 @@ document.addEventListener("DOMContentLoaded", () => {
     <p>preparing audio and visuals</p>
   `;
 
-  // playlist!
+  // playlist system!
   const playlist = [
-    { src: "assets/menu.ogg", title: "nico's nexbots ost: menu (in-game)" },
-    { src: "assets/awake.mp3", title: "nico's nexbots ost: awake (boombox ver.)" },
-    { src: "assets/stepback.mp3", title: "nico's nexbots ost: stepback (in-game)" },
-    { src: "assets/domi.ogg", title: "nico's nexbots ost: dominic's nexbots" },
-    { src: "assets/RAMBUNK!.mp3", title: "forsaken emote ost: rambunctious" },
+    { 
+      src: "assets/menu.ogg",
+      title: "nico's nexbots ost: menu (in-game)",
+      volume: 0.6,
+    },
+    {
+      src: "assets/awake.mp3",
+      title: "nico's nexbots ost: awake (boombox ver.)",
+      volume: 0.6,
+    },
+    {
+      src: "assets/stepback.mp3",
+      title: "nico's nexbots ost: stepback (in-game)",
+      volume: 0.6,
+    },
+    {
+      src: "assets/domi.ogg",
+      title: "nico's nexbots ost: dominic's nexbots",
+      volume: 0.6,
+    },
+    // {
+    //   src: "assets/RAMBUNK!.mp3",
+    //   title: "forsaken emote ost: rambunctious",
+    // },
   ];
+  
   let currentTrackIndex = 0;
   const preloadedAudios = [];
   let isStarting = false;
@@ -139,6 +162,8 @@ document.addEventListener("DOMContentLoaded", () => {
   //  Master Volume Settings
   // =======================================================
   hoverSound.volume = 0.7;
+  hoverSoundExtra.volume = 0.5
+  clickSoundExtra.volume = 0.3
   clickSound.volume = 1;
   if (bgm) bgm.volume = 0.5;
 
@@ -211,22 +236,25 @@ document.addEventListener("DOMContentLoaded", () => {
     bgm = document.createElement("audio");
     bgm.id = "bgm";
     bgm.crossOrigin = "anonymous";
-    bgm.volume = 0.5;
+    bgm.volume = currentTrack.volume;
     bgm.src = currentTrack.src;
     bgm.preload = "auto";
 
     bgm.addEventListener("ended", handleTrackEnded);
     bgm.addEventListener("play", handleTrackPlay);
+
     bgm.addEventListener(
       "canplaythrough",
       () => {
-        console.info("[bgm] ready to play:", currentTrack.src);
+        // console.info("[bgm] ready to play:", currentTrack.src);
       },
       { once: true },
     );
+
     bgm.addEventListener("stalled", () => {
       console.warn("[bgm] stalled while loading:", currentTrack.src);
     });
+
     bgm.addEventListener("error", () => {
       const err = bgm.error;
       console.error(
@@ -255,6 +283,7 @@ document.addEventListener("DOMContentLoaded", () => {
       await bgm.play();
     } catch (error) {
       console.warn("[bgm] initial play failed, retrying:", error);
+
       try {
         await waitForAudioReady(bgm, 12000);
         await bgm.play();
@@ -285,14 +314,17 @@ document.addEventListener("DOMContentLoaded", () => {
     if (bassVol > dynamicMaxBass) {
       dynamicMaxBass = bassVol;
     } else {
-      dynamicMaxBass = Math.max(dynamicMaxBass * 0.995, bassVol, bassThreshold + 1);
+      dynamicMaxBass = Math.max(
+        dynamicMaxBass * 0.995,
+        bassVol,
+        bassThreshold + 1,
+      );
     }
 
     let processedBass = 0;
     if (bassVol >= bassThreshold) {
       const maxRange = Math.max(dynamicMaxBass - bassThreshold, 1);
-      processedBass =
-        (bassVol - bassThreshold) * (255 / maxRange);
+      processedBass = (bassVol - bassThreshold) * (255 / maxRange);
     }
 
     let amplifiedVol = processedBass * volume_multiplier;
@@ -341,9 +373,23 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  extras.forEach((extra) => {
+    extra.addEventListener("mouseenter", () => {
+      hoverSoundExtra.currentTime = 0;
+      clickSoundExtra.currentTime = 0;
+      hoverSoundExtra.play().catch((e) => console.log("failed to play audio!: ", e));
+      clickSoundExtra.play().catch((e) => console.log("cant play audio!: ", e));
+    });
+    extra.addEventListener("mousedown", () => {
+      clickSound.currentTime = 0;
+      clickSound.play().catch((e) => console.log(e));
+    });
+  });
+
   overlay.addEventListener("mousedown", async () => {
     if (isStarting) return;
     isStarting = true;
+
     // overlay.style.pointerEvents = "none";
     overlay.innerHTML = overlayLoadingHTML;
     overlay.style.opacity = 1;
@@ -358,6 +404,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // BG Parallax System ===================================================
   window.addEventListener("mousemove", (e) => {
     const xVal = e.clientX / window.innerWidth - 0.5;
     const yVal = e.clientY / window.innerHeight - 0.5;
@@ -378,11 +425,18 @@ document.addEventListener("DOMContentLoaded", () => {
       const targetPageElement = document.getElementById(
         `page-${targetPageName}`,
       );
+      const targetLink = document.getElementById(targetPageName)
+
       const currentPageElement = document.querySelector(".sub-page.active");
-      if (currentPageElement === targetPageElement) return;
+      const currentLink = document.querySelector(".menu-link.active")
+
+      if (currentPageElement === targetPageElement && currentLink === targetLink) return;
+
       if (currentPageElement) {
         currentPageElement.classList.remove("active");
         currentPageElement.style.position = "absolute";
+
+        currentLink.classList.remove("active")
       }
 
       await sleep(100);
@@ -399,6 +453,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         targetPageElement.style.position = "";
         targetPageElement.classList.add("active");
+
+        targetLink.classList.add("active")
+      }
+
+      if (targetPageName == 'extras') {
+        console.log("In an, EXTRAS page!")
       }
     });
   });
